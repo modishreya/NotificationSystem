@@ -1,0 +1,9 @@
+com\target\casestudy\config\ActiveMqConnectionFactoryConfig.class
+com\target\casestudy\controller\RestAPIs.class
+com\target\casestudy\messaging\MessageProducer.class
+com\target\casestudy\model\MessageStorage.class
+com\target\casestudy\model\UserMessage.class
+com\target\casestudy\service\MailService.class
+com\target\casestudy\config\BeanConfiguration.class
+com\target\casestudy\messaging\MessageConsumer.class
+com\target\casestudy\MainApplication.class

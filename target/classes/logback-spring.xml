@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+	<if condition='"${spring.profiles.active}".contains("production")'>
+		<then>
+			<property resource="application-production.properties"/>
+		</then>
+		<else>
+			<property resource="application.properties"/>
+		</else>
+	</if>
+	<property name="LOG_FILE" value="${logging.log.dir}${logging.log.file}" />
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{dd-MM-yyyy HH:mm:ss} %logger{36} %-5level - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE-AUDIT"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_FILE}.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{dd-MM-yyyy HH:mm:ss} %logger{36} %-5level - %msg%n</pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+	<appender name="FILE-AUDIT-ERROR" class="ch.qos.logback.core.FileAppender">
+		<file>${LOG_FILE}.error</file>
+		<encoder>
+			<pattern>%d{dd-MM-yyyy HH:mm:ss} %logger{36} %-5level - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="FILE-AUDIT-ACTIVEMQ-MESSAGES" class="ch.qos.logback.core.FileAppender">
+		<file>${LOG_FILE}-activemq-summary.log</file>
+		<encoder>
+			<pattern>%d{dd-MM-yyyy HH:mm:ss} %logger{36} %-5level - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+
+	<springProfile name="dev,stagging">
+		<logger name="com.target.casestudy" level="INFO"
+			additivity="false">
+			<appender-ref ref="STDOUT" />
+			<appender-ref ref="FILE-AUDIT" />
+		</logger>
+		<logger name="org.springframework" level="error" additivity="false">
+			<appender-ref ref="FILE-AUDIT-ERROR" />
+		</logger>
+		<logger name="com.target.casestudy.messaging" level="info" additivity="true">
+			<appender-ref ref="FILE-AUDIT-ACTIVEMQ-MESSAGES" />
+		</logger>
+	</springProfile>
+
+	<springProfile name="production">
+		<logger name="com.target.casestudy" level="WARN"
+			additivity="false">
+			<appender-ref ref="STDOUT" />
+			<appender-ref ref="FILE-AUDIT" />
+		</logger>
+		<logger name="org.springframework" level="error" additivity="false">
+			<appender-ref ref="FILE-AUDIT-ERROR" />
+		</logger>
+		<logger name="com.target.casestudy.messaging" level="info" additivity="false">
+			<appender-ref ref="FILE-AUDIT-ACTIVEMQ-MESSAGES" />
+		</logger>
+	</springProfile>
+
+
+
+	<!-- By default, the level of the root level is set to DEBUG -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE-AUDIT" />
+	</root>
+</configuration>
