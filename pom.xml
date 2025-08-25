@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-core</artifactId>
-			<version>RELEASE</version>
+			<version>1.13</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.inject</groupId>
